@@ -46,6 +46,7 @@ from pathlib import Path
 
 import pandas as pd
 import numpy as np
+import data
 
 # Descomenta esta linea si te molesta el warning de sklearn sobre feature names:
 # warnings.filterwarnings("ignore", message="X does not have valid feature names")
@@ -95,11 +96,29 @@ def cargar_datos(ruta_csv: str = None) -> pd.DataFrame:
     if ruta_csv is None:
         ruta_csv = RUTA_DATOS
 
+    if not os.path.exists(ruta_csv):
+        raise FileNotFoundError(f"No se encontró el archivo: {ruta_csv}")
+
     # TODO: Implementa la carga de datos
     # Pista: usa pd.read_csv()
+    df = pd.read_csv(ruta_csv)
 
-    pass  # Elimina esta linea cuando implementes
+    columnas_necesarias = ['Nº Ronda', 'Cosmin', 'Keko Ñete']
+    columnas_faltantes = [col for col in columnas_necesarias if col not in df.columns]
 
+    if columnas_faltantes:
+        raise ValueError(f"Faltan columnas en el CSV: {columnas_faltantes}")
+
+    df = df.rename(columns={
+        'Nº Ronda': 'numero_ronda',
+        'Cosmin': 'jugada_j1',
+        'Keko Ñete': 'jugada_j2'
+    })
+
+    print(f"✅ Datos cargados: {len(df)} rondas")
+    print(f"📋 Columnas: {list(df.columns)}")
+
+    return df
 
 def preparar_datos(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -121,6 +140,7 @@ def preparar_datos(df: pd.DataFrame) -> pd.DataFrame:
     # - Usa map() con JUGADA_A_NUM para convertir jugadas a numeros
     # - Usa shift(-1) para crear la columna de proxima jugada
     # - Usa dropna() para eliminar filas con NaN
+
 
     pass  # Elimina esta linea cuando implementes
 
@@ -376,6 +396,7 @@ def main():
 
     # TODO: Implementa el flujo completo:
     # 1. Cargar datos
+    cargar_datos("D:/PCS/rps-ai-CosminStancu2/data/Datos_Keko_Ñete_Final_Cut.csv") #Ruta en crudo, asi no me lio
     # 2. Preparar datos
     # 3. Crear features
     # 4. Seleccionar features
