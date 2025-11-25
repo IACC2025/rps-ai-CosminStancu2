@@ -99,8 +99,6 @@ def cargar_datos(ruta_csv: str = None) -> pd.DataFrame:
     if not os.path.exists(ruta_csv):
         raise FileNotFoundError(f"No se encontró el archivo: {ruta_csv}")
 
-    # TODO: Implementa la carga de datos
-    # Pista: usa pd.read_csv()
     df = pd.read_csv(ruta_csv)
 
     columnas_necesarias = ['Nº Ronda', 'Cosmin', 'Keko Ñete']
@@ -109,7 +107,7 @@ def cargar_datos(ruta_csv: str = None) -> pd.DataFrame:
     if columnas_faltantes:
         raise ValueError(f"Faltan columnas en el CSV: {columnas_faltantes}")
 
-    df = df.rename(columns={
+    df = df.rename(columns = {
         'Nº Ronda': 'numero_ronda',
         'Cosmin': 'jugada_j1',
         'Keko Ñete': 'jugada_j2'
@@ -129,21 +127,22 @@ def preparar_datos(df: pd.DataFrame) -> pd.DataFrame:
     - Crea la columna 'proxima_jugada_j2' (el target a predecir)
     - Elimina filas con valores nulos
 
-    Args:
-        df: DataFrame con los datos crudos
-
-    Returns:
-        DataFrame preparado para feature engineering
     """
-    # TODO: Implementa la preparacion de datos
-    # Pistas:
-    # - Usa map() con JUGADA_A_NUM para convertir jugadas a numeros
-    # - Usa shift(-1) para crear la columna de proxima jugada
-    # - Usa dropna() para eliminar filas con NaN
+    df = df.copy()
 
+    df['jugada_j1_num'] = df['jugada_j1'].map(JUGADA_A_NUM)
+    df['jugada_j2_num'] = df['jugada_j2'].map(JUGADA_A_NUM)
 
-    pass  # Elimina esta linea cuando implementes
+    df['proxima_jugada_j2'] = df['jugada_j2_num'].shift(-1)
 
+    df = df.dropna(subset=['proxima_jugada_j2'])
+
+    df['proxima_jugada_j2'] = df['proxima_jugada_j2'].astype(int)
+
+    print(f"✅ Datos preparados: {len(df)} rondas válidas")
+    print(f"📊 Columnas numéricas creadas: jugada_j1_num, jugada_j2_num, proxima_jugada_j2")
+
+    return df
 
 # =============================================================================
 # PARTE 2: FEATURE ENGINEERING (30% de la nota)
@@ -396,8 +395,8 @@ def main():
 
     # TODO: Implementa el flujo completo:
     # 1. Cargar datos
-    cargar_datos("D:/PCS/rps-ai-CosminStancu2/data/Datos_Keko_Ñete_Final_Cut.csv") #Ruta en crudo, asi no me lio
-    # 2. Preparar datos
+    df = cargar_datos("D:/PCS/rps-ai-CosminStancu2/data/Datos_Keko_Ñete_Final_Cut.csv") #Ruta en crudo, asi no me lio
+    df = preparar_datos(df)
     # 3. Crear features
     # 4. Seleccionar features
     # 5. Entrenar modelo
