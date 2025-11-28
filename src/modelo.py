@@ -182,7 +182,7 @@ def crear_features(df: pd.DataFrame) -> pd.DataFrame:
     df['j2_freq_papel'] = (df['jugada_j2_num']==0).expanding().mean
     df['j2_freq_tijera'] = (df['jugada_j2_num']==0).expanding().mean
 
-    print("   ✅ Feature 1: Frecuencias de jugadas")
+    print("Todo ok")
 
     # ------------------------------------------
     # TODO: Feature 2 - Lag features (jugadas anteriores)
@@ -199,6 +199,7 @@ def crear_features(df: pd.DataFrame) -> pd.DataFrame:
     df['j1_lag_1'] = df['jugada_j1_num'].shift(1)
     df['j1_lag_2'] = df['jugada_j2_num'].shift(1)
 
+    print("Todo ok")
 
     # ------------------------------------------
     # TODO: Feature 3 - Resultado anterior
@@ -206,13 +207,32 @@ def crear_features(df: pd.DataFrame) -> pd.DataFrame:
     # Crea una columna con el resultado de la ronda anterior
     # Esto puede revelar patrones (ej: siempre cambia despues de perder)
 
+    def calcular_resultado(row):
+        """Determina quién ganó la ronda"""
+        j1 = row['jugada_j1']
+        j2 = row['jugada_j2']
+
+        if j1 == j2:
+            return 0  # Empate
+        elif GANA_A[j1] == j2:
+            return 1  # Gana J1
+        else:
+            return 2  # Gana J2
+
+    df['resultado_ronda'] = df.apply(calcular_resultado, axis=1)
+    df['resultado_anterior'] = df['resultado_ronda'].shift(1)
+
+    # Flags binarios para facilitar al modelo
+    df['gano_j2_anterior'] = (df['resultado_anterior'] == 2).astype(int)
+    df['perdio_j2_anterior'] = (df['resultado_anterior'] == 1).astype(int)
+    df['empate_anterior'] = (df['resultado_anterior'] == 0).astype(int)
+
+    print("Todo ok")
     # ------------------------------------------
     # TODO: Mas features (opcional pero recomendado)
     # ------------------------------------------
     # Agrega mas features que creas utiles
     # Recuerda: mas features relevantes = mejor prediccion
-
-    pass  # Elimina esta linea cuando implementes
 
 
 def seleccionar_features(df: pd.DataFrame) -> tuple:
@@ -413,7 +433,7 @@ def main():
     # 1. Cargar datos
     df = cargar_datos("D:/PCS/rps-ai-CosminStancu2/data/Datos_Keko_Ñete_Final_Cut.csv") #Ruta en crudo, asi no me lio
     df = preparar_datos(df)
-    # 3. Crear features
+    df = crear_features(df)
     # 4. Seleccionar features
     # 5. Entrenar modelo
     # 6. Guardar modelo
