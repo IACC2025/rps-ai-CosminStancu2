@@ -170,7 +170,7 @@ def crear_features(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         DataFrame con todas las features creadas
     """
-    df = df.copy()
+    df = df.copy() 
 
     # ------------------------------------------
     # TODO: Feature 1 - Frecuencia de jugadas
@@ -178,11 +178,27 @@ def crear_features(df: pd.DataFrame) -> pd.DataFrame:
     # Calcula que porcentaje de veces j2 juega cada opcion
     # Pista: usa expanding().mean() o rolling()
 
+    df['j2_freq_piedra'] = (df['jugada_j2_num']==0).expanding().mean
+    df['j2_freq_papel'] = (df['jugada_j2_num']==0).expanding().mean
+    df['j2_freq_tijera'] = (df['jugada_j2_num']==0).expanding().mean
+
+    print("   ✅ Feature 1: Frecuencias de jugadas")
+
     # ------------------------------------------
     # TODO: Feature 2 - Lag features (jugadas anteriores)
     # ------------------------------------------
     # Crea columnas con las ultimas 1, 2, 3 jugadas
     # Pista: usa shift(1), shift(2), etc.
+
+    df['j2_lag_1'] = df['jugada_j2_num'].shift(1)
+    df['j2_lag_2'] = df['jugada_j2_num'].shift(2)
+    df['j2_lag_3'] = df['jugada_j2_num'].shift(3)
+
+    #jugadas del jugador
+
+    df['j1_lag_1'] = df['jugada_j1_num'].shift(1)
+    df['j1_lag_2'] = df['jugada_j2_num'].shift(1)
+
 
     # ------------------------------------------
     # TODO: Feature 3 - Resultado anterior
@@ -402,8 +418,8 @@ def main():
     # 5. Entrenar modelo
     # 6. Guardar modelo
 
-    print("\n[!] Implementa las funciones marcadas con TODO")
-    print("[!] Luego ejecuta este script para entrenar tu modelo")
+   # print("\n[!] Implementa las funciones marcadas con TODO")
+   # print("[!] Luego ejecuta este script para entrenar tu modelo")
 
 
 if __name__ == "__main__":
