@@ -303,7 +303,6 @@ def crear_features(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-
 def seleccionar_features(df: pd.DataFrame) -> tuple:
     """
     Selecciona las features para entrenar y el target.
@@ -596,59 +595,12 @@ class JugadorIA:
         else:
             features['perdio_2_seguidas'] = 0
 
-        # ==========================================
-        # FEATURES ANTI-EXPLOTACIÓN (LAS QUE FALTABAN)
-        # ==========================================
-
-        # j1_alterna: Detecta si J1 alterna (ej: piedra-papel-piedra)
-        if len(df_hist) >= 3:
-            j = [
-                df_hist['jugada_j1_num'].iloc[-3],
-                df_hist['jugada_j1_num'].iloc[-2],
-                df_hist['jugada_j1_num'].iloc[-1]
-            ]
-            features['j1_alterna'] = 1 if (len(set(j)) == 2 and j[0] == j[2]) else 0
-        else:
-            features['j1_alterna'] = 0
-
-        # j1_repite: J1 repite la misma jugada que la anterior
-        if len(df_hist) >= 2:
-            features['j1_repite'] = 1 if df_hist['jugada_j1_num'].iloc[-1] == df_hist['jugada_j1_num'].iloc[-2] else 0
-        else:
-            features['j1_repite'] = 0
-
-        # j1_patron_contador: Cuenta cuántas rondas seguidas J1 ha seguido un patrón
-        features['j1_patron_contador'] = 0
-        if len(df_hist) >= 2:
-            contador = 0
-            for i in range(1, len(df_hist)):
-                # Repite
-                repite = df_hist['jugada_j1_num'].iloc[i] == df_hist['jugada_j1_num'].iloc[i - 1]
-
-                # Alterna (si hay al menos 3 rondas)
-                alterna = False
-                if i >= 2:
-                    j = [
-                        df_hist['jugada_j1_num'].iloc[i - 2],
-                        df_hist['jugada_j1_num'].iloc[i - 1],
-                        df_hist['jugada_j1_num'].iloc[i]
-                    ]
-                    alterna = len(set(j)) == 2 and j[0] == j[2]
-
-                if repite or alterna:
-                    contador += 1
-                else:
-                    contador = 0
-
-            features['j1_patron_contador'] = contador
-
         # Convertir a array en el MISMO ORDEN que entrenamiento
         feature_order = [
             'j2_freq_piedra', 'j2_freq_papel', 'j2_freq_tijera',
             'j2_lag_1', 'j2_lag_2', 'j2_lag_3', 'j1_lag_1', 'j1_lag_2',
             'resultado_anterior', 'gano_j2_anterior', 'perdio_j2_anterior', 'empate_anterior',
-            'tijeras_ultimas_10', 'rondas_sin_tijera', 'ratio_tijera_piedra', 'perdio_2_seguidas',
-            'j1_alterna', 'j1_repite', 'j1_patron_contador'  # ← LAS 3 QUE FALTABAN
+            'tijeras_ultimas_10', 'rondas_sin_tijera', 'ratio_tijera_piedra', 'perdio_2_seguidas'
         ]
 
         return np.array([features[f] for f in feature_order])
@@ -704,7 +656,7 @@ def main():
 
     # 1. Cargar datos
     print("\n[1/5] Cargando datos...")
-    df = cargar_datos("C:/Users/Usuario/PycharmProjects/rps-ai-CosminStancu2/data/Datos_Keko_Ñete_Final_Cut.csv") #ruta pc casa: C:/Users/Usuario/PycharmProjects/rps-ai-CosminStancu2/data/Datos_Keko_Ñete_Final_Cut.csv   ruta pc insti:D:/PCS/rps-ai-CosminStancu2/data/Datos_Keko_Ñete_Final_Cut.csv
+    df = cargar_datos("D:/PCS/rps-ai-CosminStancu2/data/Datos_Keko_Ñete_Final_Cut.csv")
 
     # 2. Preparar datos
     print("\n[2/5] Preparando datos...")
@@ -714,6 +666,7 @@ def main():
     print("\n[3/5] Creando features...")
     df = crear_features(df)
 
+    #cuando yo la vi jujujuju
     # 4. Seleccionar features
     print("\n[4/5] Seleccionando features...")
     X, y = seleccionar_features(df)
