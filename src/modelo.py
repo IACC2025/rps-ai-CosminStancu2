@@ -349,6 +349,7 @@ def entrenar_modelo(X, y, test_size: float = 0.2):
     print(f"   Accuracy Test: {mejor_accuracy:.4f} ({mejor_accuracy * 100:.2f}%)")
     print("=" * 70)
     mejor_modelo.feature_names = FEATURES_OFICIALES.copy()
+
     return mejor_modelo
 
 def guardar_modelo(modelo, ruta: str = None):
@@ -681,6 +682,7 @@ def main():
     print("\nAhora puedes usar JugadorIA para jugar:")
     print("  ia = JugadorIA()")
     print("  jugada = ia.decidir_jugada()")
+
 
 if __name__ == "__main__":
     main()
