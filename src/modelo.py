@@ -293,9 +293,22 @@ def entrenar_modelo(X, y, test_size: float = 0.2):
 
     # Definir modelos a probar
     modelos = {
-        'KNN': KNeighborsClassifier(n_neighbors=5),
-        'DecisionTree': DecisionTreeClassifier(max_depth=10, random_state=42),
-        'RandomForest': RandomForestClassifier(n_estimators=100, max_depth=10, random_state=42)
+        'KNN_3': KNeighborsClassifier(n_neighbors=3),
+        'KNN_7': KNeighborsClassifier(n_neighbors=7),
+        'Tree_Deep': DecisionTreeClassifier(max_depth=15, min_samples_split=3, random_state=42),
+        'RF_200': RandomForestClassifier(
+            n_estimators=200,
+            max_depth=15,
+            min_samples_split=3,
+            min_samples_leaf=1,
+            max_features='sqrt',
+            random_state=42
+        ),
+        'RF_300': RandomForestClassifier(
+            n_estimators=300,
+            max_depth=20,
+            random_state=42
+        )
     }
 
     mejor_modelo = None
@@ -349,6 +362,17 @@ def entrenar_modelo(X, y, test_size: float = 0.2):
     print(f"   Accuracy Test: {mejor_accuracy:.4f} ({mejor_accuracy * 100:.2f}%)")
     print("=" * 70)
     mejor_modelo.feature_names = FEATURES_OFICIALES.copy()
+
+    from sklearn.model_selection import cross_val_score
+
+    # Validación cruzada del mejor modelo
+    scores = cross_val_score(mejor_modelo, X, y, cv=5, scoring='accuracy')
+    print(f"\n📊 Validación Cruzada (5-fold):")
+    print(f"   Scores: {scores}")
+    print(f"   Media: {scores.mean():.4f} (+/- {scores.std():.4f})")
+
+    if scores.mean() < 0.35:
+        print("   ⚠️  WARNING: Accuracy muy baja, el modelo puede no generalizar bien")
 
     return mejor_modelo
 
@@ -653,7 +677,7 @@ def main():
 
     # 1. Cargar datos
     print("\n[1/5] Cargando datos...")
-    df = cargar_datos("D:/PCS/rps-ai-CosminStancu2/data/Datos_Keko_Ñete_Final_Cut.csv")
+    df = cargar_datos("C:/Users/Usuario/PycharmProjects/rps-ai-CosminStancu2/data/Datos_Keko_Ñete_Final_Cut.csv")  #C:/Users/Usuario/PycharmProjects/rps-ai-CosminStancu2/data/Datos_Keko_Ñete_Final_Cut.csv
 
     # 2. Preparar datos
     print("\n[2/5] Preparando datos...")
