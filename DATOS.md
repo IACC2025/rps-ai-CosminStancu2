@@ -67,12 +67,12 @@ Si capturaste datos extra ademas de los basicos, marcalos aqui:
 
 ## Estadisticas del dataset
 
-- **Total de rondas:** _____
-- **Numero de sesiones/partidas:** 200
+- **Total de rondas:** 200
+- **Numero de sesiones/partidas:** 1
 - **Contra cuantas personas diferentes:** 2
 
 ### Tipo de IA:
 
 - [x] **IA Especifica**: Entrenada para ganar a UNA persona concreta
-  - Nombre/identificador del oponente: Diego / Gabriel
+  - Nombre/identificador del oponente: Gabriel
 - [ ] **IA General**: Entrenada para ganar a cualquier oponente

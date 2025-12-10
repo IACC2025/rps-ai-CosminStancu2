@@ -677,7 +677,7 @@ def main():
 
     # 1. Cargar datos
     print("\n[1/5] Cargando datos...")
-    df = cargar_datos("C:/Users/Usuario/PycharmProjects/rps-ai-CosminStancu2/data/Datos_Keko_Ñete_Final_Cut.csv")  #C:/Users/Usuario/PycharmProjects/rps-ai-CosminStancu2/data/Datos_Keko_Ñete_Final_Cut.csv
+    df = cargar_datos("D:/PCS/rps-ai-CosminStancu2/data/Datos_Keko_Ñete_Final_Cut.csv")  #C:/Users/Usuario/PycharmProjects/rps-ai-CosminStancu2/data/Datos_Keko_Ñete_Final_Cut.csv   #
 
     # 2. Preparar datos
     print("\n[2/5] Preparando datos...")

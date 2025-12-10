@@ -345,7 +345,6 @@ Ejemplos de uso:
         default=None,
         help="Ruta personalizada al modelo entrenado (default: models/modelo_entrenado.pkl)"
     )
-
     args = parser.parse_args()
 
     # Validar número de rondas
